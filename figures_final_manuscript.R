@@ -246,7 +246,7 @@ df_all <- df_all %>%
     TRUE ~ "Other"
   ))
 
-# ✅ Reorder x-axis so all Sterilized come first, then Washed
+#  Reorder x-axis so all Sterilized come first, then Washed
 df_all$Treatment_agg <- factor(
   df_all$Treatment_agg,
   levels = c(
