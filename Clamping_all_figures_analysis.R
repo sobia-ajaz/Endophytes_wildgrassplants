@@ -41,7 +41,7 @@ TREE <- phy_tree(phy_tree)
 physeq <- phyloseq(OTU, TAX, META, TREE)
 
 ##############################################################
-# 2️⃣ Basic Filtering and Cleanup
+#  Basic Filtering and Cleanup
 ##############################################################
 
 # Remove unassigned or unwanted taxa
@@ -173,5 +173,5 @@ save(
 )
 
 ##############################################################
-# ✅ End of Workflow
+# End of Workflow
 ##############################################################
