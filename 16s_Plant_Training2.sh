@@ -1,23 +1,5 @@
-#!/bin/bash -l
-#SBATCH --job-name=Training
-# speficity number of nodes 
-#SBATCH -N 5
+#!/bin/bash 
 
-# specify number of tasks/cores per node required
-#SBATCH --ntasks-per-node 10
-
-# specify the walltime e.g 20 mins
-#SBATCH -t 06:00:00
-
-# set to email at start,end and failed jobs
-#SBATCH --mail-type=ALL
-#SBATCH --mail-user=sobia.ajaz@ucd.ie
-
-# run from current directory
-cd $SLURM_SUBMIT_DIR
-
-# command to use
-hostname
 
 #activate qiime2
 conda activate qiime2-amplicon-2024.2
@@ -63,6 +45,7 @@ qiime taxa barplot --i-table id-filtered-table.qza  --i-taxonomy taxonomy_SILVA.
 
 #Creating a tree to do phylogenetic diversity analyzes. For more info follow the link
 https://docs.qiime2.org/2020.2/plugins/available/phylogeny/
+
 
 qiime phylogeny align-to-tree-mafft-fasttree --i-sequences rep-seqs.qza --o-alignment aligned-rep-seqs.qza --o-masked-alignment masked-aligned-rep-seqs.qza --o-tree unrooted-tree.qza --o-rooted-tree rooted-tree.qza
 
