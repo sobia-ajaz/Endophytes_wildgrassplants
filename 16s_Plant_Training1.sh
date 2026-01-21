@@ -1,23 +1,4 @@
-#!/bin/bash -l
-#SBATCH --job-name=Training
-# speficity number of nodes 
-#SBATCH -N 5
-
-# specify number of tasks/cores per node required
-#SBATCH --ntasks-per-node 10
-
-# specify the walltime e.g 20 mins
-#SBATCH -t 06:00:00
-
-# set to email at start,end and failed jobs
-#SBATCH --mail-type=ALL
-#SBATCH --mail-user=sobia.ajaz@ucd.ie
-
-# run from current directory
-cd $SLURM_SUBMIT_DIR
-
-# command to use
-hostname
+#!/bin/bash
 
 #activate qiime2
 conda activate qiime2-amplicon-2024.2
