@@ -16,7 +16,7 @@ library(ggpubr)
 library(RColorBrewer)
 
 ##############################################################
-# 1️⃣ Data Import from QIIME2
+# Data Import from QIIME2
 ##############################################################
 
 # Import feature table (ASVs/OTUs)
@@ -54,7 +54,7 @@ physeq <- subset_taxa(physeq, !Family %in% c("Chloroplast", "Mitochondria"))
 physeq <- prune_taxa(taxa_sums(physeq) > 10, physeq)
 
 ##############################################################
-# 3️⃣ Rarefaction / Normalization
+#  Rarefaction / Normalization
 ##############################################################
 
 # Rarefy to even sequencing depth (for diversity analysis)
@@ -63,7 +63,7 @@ min_depth <- min(sample_sums(physeq))
 physeq_rarefied <- rarefy_even_depth(physeq, sample.size = min_depth, rngseed = 123, replace = FALSE)
 
 ##############################################################
-# 4️⃣ Taxonomic Agglomeration (Family Level)
+# Taxonomic Agglomeration (Family Level)
 ##############################################################
 
 family_physeq <- tax_glom(physeq_rarefied, taxrank = "Family")
@@ -72,7 +72,7 @@ family_physeq <- tax_glom(physeq_rarefied, taxrank = "Family")
 family_rel <- transform_sample_counts(family_physeq, function(x) x / sum(x))
 
 ##############################################################
-# 5️⃣ Stacked Bar Plot (Relative Abundance)
+#  Stacked Bar Plot (Relative Abundance)
 ##############################################################
 
 family_df <- psmelt(family_rel)
@@ -100,7 +100,7 @@ p_bar <- ggplot(family_df, aes(x = Sample, y = Abundance, fill = Family_grouped)
 print(p_bar)
 
 ##############################################################
-# 6️⃣ Alpha Diversity (Shannon Index)
+# Alpha Diversity (Shannon Index)
 ##############################################################
 
 alpha_div <- estimate_richness(physeq_rarefied, measures = "Shannon")
@@ -123,7 +123,7 @@ p_alpha <- ggboxplot(alpha_div, x = "Treatment", y = "Shannon",
 print(p_alpha)
 
 ##############################################################
-# 7️⃣ Beta Diversity (Bray–Curtis + PCoA)
+# Beta Diversity (Bray–Curtis + PCoA)
 ##############################################################
 
 # Compute Bray–Curtis dissimilarity
@@ -156,14 +156,14 @@ p_beta <- plot_ordination(family_physeq, ordination, color = "Plant", shape = "C
 print(p_beta)
 
 ##############################################################
-# 8️⃣ PERMANOVA (Statistical test on beta diversity)
+#  PERMANOVA (Statistical test on beta diversity)
 ##############################################################
 
 adonis_result <- adonis2(beta_dist ~ Plant * Clamp * Treatment_Sequencing, data = metadata)
 print(adonis_result)
 
 ##############################################################
-# 9️⃣ Save All Objects for Future Use
+# Save All Objects for Future Use
 ##############################################################
 
 save(
