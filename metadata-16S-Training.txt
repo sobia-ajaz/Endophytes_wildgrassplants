@@ -1,0 +1,6 @@
+SampleID	Name	Clamp	Treatment	Extraction	Type	Plant	Family	sequencing
+#q2:types	categorical	categorical	categorical	categorical	categorical	categorical	categorical	categorical
+47-C1	C1	no_clamp	Washed	freeze_dry	plant	White clover	legume	after_optimization
+61-C1A	C1A	no_clamp	nonwashed	freeze_dry	plant	Holcus	grass	after_optimization
+71-CLAMPC1	CLAMPC1	clamp	Washed	freeze_dry	plant	White clover	legume	after_optimization
+86-CLAMPC1A	CLAMPC1A	clamp	nonwashed	freeze_dry	plant	White clover	legume	after_optimization
