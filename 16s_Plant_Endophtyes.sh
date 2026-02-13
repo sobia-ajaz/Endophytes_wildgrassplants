@@ -32,13 +32,6 @@ qiime cutadapt trim-paired --i-demultiplexed-sequences demux-paired-end_16S-Plan
 qiime demux summarize --i-data demux-cutadapt_16S-Plant-Training.qza --o-visualization demux-cutadapt_16S-Plant-Training.qzv
 
 #DADA2
-It’s important to take a look at the quality plots and choose a good place for DADA2 to truncate the reads. –p-trunc-len-f defines the length the forward reads will be trimmed and –p-trunc-len-r defines the length the reverse reads will be trimmed at. You want to trim off low-quality bases because DADA2 has a initial filtering step based on quality, so it will discard the whole read if the quality drops off too much at the end (which could otherwise be retained if truncated appropriately). But you also want to keep long enough reads for DADA2 to be able to merge. The default min overlap is 12 but can be decreased down to 4 with –p-min-overlap
-
-
-#Overlapping region
-#220+180=400-250=150nts
-#220=length of forward read, 180=length of reverse read, 250=amplicon size
-
 
 qiime dada2 denoise-paired --i-demultiplexed-seqs demux-cutadapt_16S-Plant-Training.qza --p-trim-left-f 0 --p-trim-left-r 0 --p-trunc-len-f 220 --p-trunc-len-r 180 --o-table feature-table.qza --o-representative-sequences rep-seqs.qza --o-denoising-stats denoizing_stats.qza
 
@@ -59,3 +52,5 @@ qiime tools export --input-path feature-table.qza --output-path exported-table
 cd exported-table
 
 biom convert -i feature-table.biom -o feature-table.tsv --to-tsv
+
+
