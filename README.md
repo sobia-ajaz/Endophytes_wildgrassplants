@@ -7,21 +7,21 @@ This project uses a reproducible bioinformatics pipeline to process 16S rRNA amp
 
 
 
-Step 1 — QIIME2 Processing <br>
-All primary sequence processing was conducted in QIIME2.
-Key Steps:
-Import paired-end FASTQ files
-Quality filtering and trimming
-Denoising using DADA2
-ASV inference
-Chimera removal
-Generation of feature table
-Taxonomic assignment using reference database
-Outputs:
-Feature table (ASV abundance)
-Representative sequences
-Taxonomy table
-QIIME2 artefacts (.qza files)
-Phylogenetic Tree
+**Step 1 — QIIME2 Processing** <br>
+All primary sequence processing was conducted in QIIME2.<br>
+**Key Steps:** <br>
+Import paired-end FASTQ files<br>
+Quality filtering and trimming<br>
+Denoising using DADA2<br>
+ASV inference<br>
+Chimera removal<br>
+Generation of feature table<br>
+Taxonomic assignment using reference database<br>
+**Outputs:**<br>
+Feature table (ASV abundance)<br>
+Representative sequences<br>
+Taxonomy table<br>
+QIIME2 artefacts (.qza files)<br>
+Phylogenetic Tree<br>
 
 
