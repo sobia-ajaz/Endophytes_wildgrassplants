@@ -3,11 +3,11 @@
 This repository contains scripts used in the study:
 # “Unveiling Hidden Endophytes by Optimising Identification of Endophytic Bacterial Communities from Wild Grassland Plant Roots.”
 
-This project uses a reproducible bioinformatics pipeline to process 16S rRNA amplicon sequencing data for identifying bacterial endophytic communities from plant roots. The workflow integrates QIIME2 processing, downstream analysis in R using phyloseq, and comparative analyses with and without host-derived sequences.
+This project uses a reproducible bioinformatics pipeline to process 16S rRNA amplicon sequencing data for identifying bacterial endophytic communities from plant roots. The workflow integrates QIIME2 processing, downstream analysis in R using phyloseq, and comparative analyses with and without host-derived sequences. <br>
 
 
 
-Step 1 — QIIME2 Processing
+Step 1 — QIIME2 Processing <br>
 All primary sequence processing was conducted in QIIME2.
 Key Steps:
 Import paired-end FASTQ files
