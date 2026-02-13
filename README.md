@@ -22,6 +22,15 @@ Feature table (ASV abundance)<br>
 Representative sequences<br>
 Taxonomy table<br>
 QIIME2 artefacts (.qza files)<br>
-Phylogenetic Tree<br>
+Phylogenetic Tree <br>
+
+**Step 2 — Export and Import into R ** <br>
+QIIME2 outputs were exported and imported into R <br>
+**Actions:** <br>
+Convert feature table to biom format <br>
+Import taxonomy and metadata <br>
+Create phyloseq object <br>
+**Output:** <br>
+Integrated phyloseq dataset <br>
 
 
