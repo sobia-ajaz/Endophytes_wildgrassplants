@@ -17,14 +17,14 @@ ASV inference<br>
 Chimera removal<br>
 Generation of feature table<br>
 Taxonomic assignment using reference database<br>
-**Outputs:**<br>
+**Outputs:** <br>
 Feature table (ASV abundance)<br>
 Representative sequences<br>
 Taxonomy table<br>
 QIIME2 artefacts (.qza files)<br>
 Phylogenetic Tree <br>
 
-**Step 2 — Export and Import into R ** <br>
+**Step 2 — Export and Import into R** <br>
 QIIME2 outputs were exported and imported into R <br>
 **Actions:** <br>
 Convert feature table to biom format <br>
