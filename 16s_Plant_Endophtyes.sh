@@ -70,7 +70,7 @@ qiime metadata tabulate --m-input-file taxonomy_SILVA.qza --o-visualization taxo
 
 #Taxabarplots
 
-qiime taxa barplot --i-table id-filtered-table.qza  --i-taxonomy taxonomy_SILVA.qza --m-metadata-file metadata-16S.txt --o-visualization taxa-bar-plots.qzv
+qiime taxa barplot --i-table feature-table.qza  --i-taxonomy taxonomy_SILVA.qza --m-metadata-file metadata-16S.txt --o-visualization taxa-bar-plots.qzv
 
 
 
