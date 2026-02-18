@@ -1,4 +1,11 @@
+
+
 #!/bin/bash
+##############################################################
+# 16S rRNA Microbial Community Analysis using Qiime2
+# Author: Dr. Sobia Ajaz
+# Updated: Feb 2026
+##############################################################
 
 #activate qiime2
 conda activate qiime2-amplicon-2024.2
