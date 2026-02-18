@@ -9,14 +9,8 @@ This project uses a reproducible bioinformatics pipeline to process 16S rRNA amp
 
 **Step 1 — QIIME2 Processing** <br>
 All primary sequence processing was conducted in QIIME2.<br>
-**Key Steps:** <br>
-Import paired-end FASTQ files<br>
-Quality filtering and trimming<br>
-Denoising using DADA2<br>
-ASV inference<br>
-Chimera removal<br>
-Generation of feature table<br>
-Taxonomic assignment using reference database<br>
+This Bash script implements a Qiime2 pipeline for processing paired-end 16S rRNA amplicon data (V4 region). It begins by importing raw sequencing files, trimming forward and reverse primers with Cutadapt, and denoising the reads using DADA2 to generate a feature table and representative sequences. Taxonomic assignment is performed with a pre-trained SILVA classifier, and a phylogenetic tree is constructed via MAFFT alignment and FastTree. The pipeline concludes with alpha rarefaction and core diversity metrics, all consistently referencing the same metadata file (metadata-16S.txt) throughout the workflow.
+**16s_Plant_Endophytes.sh** <br> script used for this step <br>
 **Outputs:** <br>
 Feature table (ASV abundance)<br>
 Representative sequences<br>
