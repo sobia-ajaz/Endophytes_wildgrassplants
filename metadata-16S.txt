@@ -1,6 +1,99 @@
-SampleID	Name	Clamp	Treatment	Extraction	Type	Plant	Family	sequencing
-#q2:types	categorical	categorical	categorical	categorical	categorical	categorical	categorical	categorical
-47-C1	C1	no_clamp	Washed	freeze_dry	plant	White clover	legume	after_optimization
-61-C1A	C1A	no_clamp	nonwashed	freeze_dry	plant	Holcus	grass	after_optimization
-71-CLAMPC1	CLAMPC1	clamp	Washed	freeze_dry	plant	White clover	legume	after_optimization
-86-CLAMPC1A	CLAMPC1A	clamp	nonwashed	freeze_dry	plant	White clover	legume	after_optimization
+SampleID	Name	S_Name	Categories	Treatment_agg	Clamp	Treatment	Extraction	Type	Plant	Grass_Family	sequencing
+#q2:types	categorical	categorical	categorical	categorical	categorical	categorical	categorical	categorical	categorical	categorical	categorical
+42-BC-bact_clamp	BC	BC	BC	BC	clamp	blank	blank	blank	blank	blank	blank
+44-NC-bact_clamp	NC	NC	NC	NC	clamp	blank	blank	blank	blank	blank	blank
+43-PC-bact_clamp	PC	PC	PC	PC	clamp	blank	blank	blank	blank	blank	blank
+41-WC-bact_clamp	WC	WC	WC	WC	clamp	blank	blank	blank	blank	blank	blank
+20-BC-bact	BC	BC	BC	BC	no_clamp	blank	blank	blank	blank	blank	blank
+22-NC-bact	NC	NC	NC	NC	no_clamp	blank	blank	blank	blank	blank	blank
+21-PC_bact	PC	PC	PC	PC	no_clamp	blank	blank	blank	blank	blank	blank
+19-WC-bact	WC	WC	WC	WC	no_clamp	blank	blank	blank	blank	blank	blank
+89-CLAMPB1A	CLAMPB1A	B5_Clamp_Washed	B_Clamp_Washed	Clamp_Washed	clamp	Washed	freeze_dry	plant	Buttercup	forbe	NA
+90-CLAMPB2A	CLAMPB2A	B6_Clamp_Washed	B_Clamp_Washed	Clamp_Washed	clamp	Washed	freeze_dry	plant	Buttercup	forbe	NA
+91-CLAMPB3A	CLAMPB3A	B7_Clamp_Washed	B_Clamp_Washed	Clamp_Washed	clamp	Washed	freeze_dry	plant	Buttercup	forbe	NA
+83-CLAMPH1A	CLAMPH1A	H7_Clamp_Washed	H_Clamp_Washed	Clamp_Washed	clamp	Washed	freeze_dry	plant	Holcus	grass	NA
+84-CLAMPH2A	CLAMPH2A	H8_Clamp_Washed	H_Clamp_Washed	Clamp_Washed	clamp	Washed	freeze_dry	plant	Holcus	grass	NA
+85-CLAMPH3A	CLAMPH3A	H9_Clamp_Washed	H_Clamp_Washed	Clamp_Washed	clamp	Washed	freeze_dry	plant	Holcus	grass	NA
+86-CLAMPC1A	CLAMPC1A	W6_Clamp_Washed	W_Clamp_Washed	Clamp_Washed	clamp	Washed	freeze_dry	plant	White clover	legume	NA
+87-CLAMPC2A	CLAMPC2A	W7_Clamp_Washed	W_Clamp_Washed	Clamp_Washed	clamp	Washed	freeze_dry	plant	White clover	legume	NA
+88-CLAMPC3A	CLAMPC3A	W8_Clamp_Washed	W_Clamp_Washed	Clamp_Washed	clamp	Washed	freeze_dry	plant	White clover	legume	NA
+65-B1A	B1A	B17_Noclamp_Washed	B_Noclamp_Washed	Noclamp_Washed	no_clamp	Washed	freeze_dry	plant	Buttercup	forbe	NA
+66-B2A	B2A	B18_Noclamp_Washed	B_Noclamp_Washed	Noclamp_Washed	no_clamp	Washed	freeze_dry	plant	Buttercup	forbe	NA
+67-B3A	B3A	B19_Noclamp_Washed	B_Noclamp_Washed	Noclamp_Washed	no_clamp	Washed	freeze_dry	plant	Buttercup	forbe	NA
+59-H1A	H1A	H20_Noclamp_Washed	H_Noclamp_Washed	Noclamp_Washed	no_clamp	Washed	freeze_dry	plant	Holcus	grass	NA
+60-H3A	H3A	H21_Noclamp_Washed	H_Noclamp_Washed	Noclamp_Washed	no_clamp	Washed	freeze_dry	plant	Holcus	grass	NA
+64-H2A	H2A	H22_Noclamp_Washed	H_Noclamp_Washed	Noclamp_Washed	no_clamp	Washed	freeze_dry	plant	Holcus	legume	NA
+61-C1A	C1A	W15_Noclamp_Washed	W_Noclamp_Washed	Noclamp_Washed	no_clamp	Washed	freeze_dry	plant	White clover	grass	NA
+62-C2A	C2A	W16_Noclamp_Washed	W_Noclamp_Washed	Noclamp_Washed	no_clamp	Washed	freeze_dry	plant	White clover	legume	NA
+63-C3A	C3A	W17_Noclamp_Washed	W_Noclamp_Washed	Noclamp_Washed	no_clamp	Washed	freeze_dry	plant	White clover	legume	NA
+93-NEGATIVE	NEGATIVE	NEGATIVE	NEGATIVE	NEGATIVE	NEGATIVE	NEGATIVE	NEGATIVE	NEGATIVE	NEGATIVE	NEGATIVE	NEGATIVE
+94-NEGATIVE	NEGATIVE	NEGATIVE	NEGATIVE	NEGATIVE	NEGATIVE	NEGATIVE	NEGATIVE	NEGATIVE	NEGATIVE	NEGATIVE	NEGATIVE
+CGR_NEG	NEGATIVE	NEGATIVE	NEGATIVE	NEGATIVE	NEGATIVE	NEGATIVE	NEGATIVE	NEGATIVE	NEGATIVE	NEGATIVE	NEGATIVE
+74-CLAMPB1	CLAMPB1	B1_Clamp_Optimized_Sterilized	B_Clamp_Optimized_Sterilized	Clamp_Optimized_Sterilized	clamp	Sterilized	freeze_dry	plant	Buttercup	forbe	Optimized
+75-CLAMPB2	CLAMPB2	B2_Clamp_Optimized_Sterilized	B_Clamp_Optimized_Sterilized	Clamp_Optimized_Sterilized	clamp	Sterilized	freeze_dry	plant	Buttercup	forbe	Optimized
+76-CLAMPB3	CLAMPB3	B3_Clamp_Optimized_Sterilized	B_Clamp_Optimized_Sterilized	Clamp_Optimized_Sterilized	clamp	Sterilized	freeze_dry	plant	Buttercup	forbe	Optimized
+82-CLAMP5	CLAMP5	B4_Clamp_Optimized_Sterilized	B_Clamp_Optimized_Sterilized	Clamp_Optimized_Sterilized	clamp	Sterilized	freeze_dry	plant	Buttercup	forbe	Optimized
+78-CLAMP18RW	CLAMP18RW	H1_Clamp_Optimized_Sterilized	H_Clamp_Optimized_Sterilized	Clamp_Optimized_Sterilized	clamp	Sterilized	freeze_dry	plant	Holcus	grass	Optimized
+68-CLAMPH1	CLAMPH1	H2_Clamp_Optimized_Sterilized	H_Clamp_Optimized_Sterilized	Clamp_Optimized_Sterilized	clamp	Sterilized	freeze_dry	plant	Holcus	grass	Optimized
+69-CLAMPH2	CLAMPH2	H3_Clamp_Optimized_Sterilized	H_Clamp_Optimized_Sterilized	Clamp_Optimized_Sterilized	clamp	Sterilized	freeze_dry	plant	Holcus	grass	Optimized
+70-CLAMPH3	CLAMPH3	H4_Clamp_Optimized_Sterilized	H_Clamp_Optimized_Sterilized	Clamp_Optimized_Sterilized	clamp	Sterilized	freeze_dry	plant	Holcus	grass	Optimized
+81-CLAMP1	CLAMP1	H5_Clamp_Optimized_Sterilized	H_Clamp_Optimized_Sterilized	Clamp_Optimized_Sterilized	clamp	Sterilized	freeze_dry	plant	Holcus	grass	Optimized
+77-CLAMP127RW	CLAMP127RW	H6_Clamp_Optimized_Sterilized	H_Clamp_Optimized_Sterilized	Clamp_Optimized_Sterilized	clamp	Sterilized	freeze_dry	plant	Holcus	legume	Optimized
+79-CLAMP24RW	CLAMP24RW	W1_Clamp_Optimized_Sterilized	W_Clamp_Optimized_Sterilized	Clamp_Optimized_Sterilized	clamp	Sterilized	freeze_dry	plant	White clover	forbe	Optimized
+71-CLAMPC1	CLAMPC1	W2_Clamp_Optimized_Sterilized	W_Clamp_Optimized_Sterilized	Clamp_Optimized_Sterilized	clamp	Sterilized	freeze_dry	plant	White clover	legume	Optimized
+72-CLAMPC2	CLAMPC2	W3_Clamp_Optimized_Sterilized	W_Clamp_Optimized_Sterilized	Clamp_Optimized_Sterilized	clamp	Sterilized	freeze_dry	plant	White clover	legume	Optimized
+73-CLAMPC3	CLAMPC3	W4_Clamp_Optimized_Sterilized	W_Clamp_Optimized_Sterilized	Clamp_Optimized_Sterilized	clamp	Sterilized	freeze_dry	plant	White clover	legume	Optimized
+80-CLAMP4	CLAMP4	W5_Clamp_Optimized_Sterilized	W_Clamp_Optimized_Sterilized	Clamp_Optimized_Sterilized	clamp	Sterilized	freeze_dry	plant	White clover	legume	Optimized
+58-5	5	B13_Noclamp_Sterilized	B_Noclamp_Sterilized	Noclamp_Sterilized	no_clamp	Sterilized	freeze_dry	plant	Buttercup	forbe	Optimized
+50-B1	B1	B14_Noclamp_Sterilized	B_Noclamp_Sterilized	Noclamp_Sterilized	no_clamp	Sterilized	freeze_dry	plant	Buttercup	forbe	Optimized
+51-B2	B2	B15_Noclamp_Sterilized	B_Noclamp_Sterilized	Noclamp_Sterilized	no_clamp	Sterilized	freeze_dry	plant	Buttercup	forbe	Optimized
+52-B3	B3	B16_Noclamp_Sterilized	B_Noclamp_Sterilized	Noclamp_Sterilized	no_clamp	Sterilized	freeze_dry	plant	Buttercup	forbe	Optimized
+54-18RW	18RW	H14_Noclamp_Sterilized	H_Noclamp_Sterilized	Noclamp_Sterilized	no_clamp	Sterilized	freeze_dry	plant	Holcus	grass	Optimized
+44-H1	H1	H15_Noclamp_Sterilized	H_Noclamp_Sterilized	Noclamp_Sterilized	no_clamp	Sterilized	freeze_dry	plant	Holcus	grass	Optimized
+45-H2	H2	H16_Noclamp_Sterilized	H_Noclamp_Sterilized	Noclamp_Sterilized	no_clamp	Sterilized	freeze_dry	plant	Holcus	grass	Optimized
+46-H3	H3	H17_Noclamp_Sterilized	H_Noclamp_Sterilized	Noclamp_Sterilized	no_clamp	Sterilized	freeze_dry	plant	Holcus	grass	Optimized
+57-1	1	H18_Noclamp_Sterilized	H_Noclamp_Sterilized	Noclamp_Sterilized	no_clamp	Sterilized	freeze_dry	plant	Holcus	grass	Optimized
+53-127RW	127RW	H19_Noclamp_Sterilized	H_Noclamp_Sterilized	Noclamp_Sterilized	no_clamp	Sterilized	freeze_dry	plant	Holcus	legume	Optimized
+55-24RW	24RW	W10_Noclamp_Sterilized	W_Noclamp_Sterilized	Noclamp_Sterilized	no_clamp	Sterilized	freeze_dry	plant	White clover	forbe	Optimized
+47-C1	C1	W11_Noclamp_Sterilized	W_Noclamp_Sterilized	Noclamp_Sterilized	no_clamp	Sterilized	freeze_dry	plant	White clover	legume	Optimized
+48-C2	C2	W12_Noclamp_Sterilized	W_Noclamp_Sterilized	Noclamp_Sterilized	no_clamp	Sterilized	freeze_dry	plant	White clover	legume	Optimized
+49-C3	C3	W13_Noclamp_Sterilized	W_Noclamp_Sterilized	Noclamp_Sterilized	no_clamp	Sterilized	freeze_dry	plant	White clover	legume	Optimized
+56-4	4	W14_Noclamp_Sterilized	W_Noclamp_Sterilized	Noclamp_Sterilized	no_clamp	Sterilized	freeze_dry	plant	White clover	legume	Optimized
+92-POSITIVECHLO	POSITIVECHLO	POSITIVECHLO	POSITIVECHLO	POSITIVECHLO	Positive	Positive	Positive	Positive	Positive	Positive	Positive
+24-2FD-bact_clamp	2FD	B10_Clamp_Standard_Sterilized	B_Clamp_Standard_Sterilized	Clamp_Standard_Sterilized	clamp	Sterilized	freeze_dry	plant	Buttercup	forbe	Standard
+39-7MP-bact_clamp	7MP	B11_Clamp_Standard_Sterilized	B_Clamp_Standard_Sterilized	Clamp_Standard_Sterilized	clamp	Sterilized	mortar_pilar	plant	Buttercup	forbe	Standard
+35-3MP-bact_clamp	3MP	D1_Clamp_Standard_Sterilized	B_Clamp_Standard_Sterilized	Clamp_Standard_Sterilized	clamp	Sterilized	mortar_pilar	plant	Dandelion	forbe	Standard
+23-1FD-bact_clamp	1FD	B8_Clamp_Standard_Sterilized	B_Clamp_Standard_Sterilized	Clamp_Standard_Sterilized	clamp	Sterilized	freeze_dry	plant	Buttercup	forbe	Standard
+29-1FDs-bact_clamp	1FDs	B9_Clamp_Standard_Sterilized	B_Clamp_Standard_Sterilized	Clamp_Standard_Sterilized	clamp	Sterilized	freeze_dry	soil	Buttercup	forbe	Standard
+30-2FDs-bact_clamp	2FDs	BG1_Clamp_Standard_Sterilized	BG_Clamp_Standard_Sterilized	Clamp_Standard_Sterilized	clamp	Sterilized	freeze_dry	soil	Bent_Grass	grass	Standard
+25-3FD-bact_clamp	3FD	BG2_Clamp_Standard_Sterilized	BG_Clamp_Standard_Sterilized	Clamp_Standard_Sterilized	clamp	Sterilized	freeze_dry	plant	Bent_Grass	grass	Standard
+36-4MP-bact_clamp	4MP	BG3_Clamp_Standard_Sterilized	BG_Clamp_Standard_Sterilized	Clamp_Standard_Sterilized	clamp	Sterilized	mortar_pilar	plant	Bent_Grass	grass	Standard
+31-3FDs-bact_clamp	3FDS	H12_Clamp_Standard_Sterilized	H_Clamp_Standard_Sterilized	Clamp_Standard_Sterilized	clamp	Sterilized	freeze_dry	soil	Holcus	grass	Standard
+26-4FD-bact_clamp	4FD	H10_Clamp_Standard_Sterilized	H_Clamp_Standard_Sterilized	Clamp_Standard_Sterilized	clamp	Sterilized	freeze_dry	plant	Holcus	grass	Standard
+32-4FDs-bact_clamp	4FDs	H11_Clamp_Standard_Sterilized	H_Clamp_Standard_Sterilized	Clamp_Standard_Sterilized	clamp	Sterilized	freeze_dry	soil	Holcus	grass	Standard
+38-6MP-bact_clamp	6MP	H12_Clamp_Standard_Sterilized	H_Clamp_Standard_Sterilized	Clamp_Standard_Sterilized	clamp	Sterilized	mortar_pilar	plant	Holcus	grass	Standard
+40-8MP-bact_clamp	8MP	P1_Clamp_Standard_Sterilized	P_Clamp_Standard_Sterilized	Clamp_Standard_Sterilized	clamp	Sterilized	mortar_pilar	plant	Plantain	forbe	Standard
+34-2MP-bact_clamp	2MP	PRG1_Clamp_Standard_Sterilized	PRG_Clamp_Standard_Sterilized	Clamp_Standard_Sterilized	clamp	Sterilized	mortar_pilar	plant	PRG	grass	Standard
+27-5FD-bact_clamp	5FD	PRG2_Clamp_Standard_Sterilized	PRG_Clamp_Standard_Sterilized	Clamp_Standard_Sterilized	clamp	Sterilized	freeze_dry	plant	PRG	grass	Standard
+28-6FD-bact_clamp	6FD	S1_Clamp_Standard_Sterilized	S_Clamp_Standard_Sterilized	Clamp_Standard_Sterilized	clamp	Sterilized	freeze_dry	plant	Sorrel	forbe	Standard
+37-5MP-bact_clamp	5MP	SVG1_Clamp_Standard_Sterilized	SVG_Clamp_Standard_Sterilized	Clamp_Standard_Sterilized	clamp	Sterilized	mortar_pilar	plant	Sweet_vernal_Grass	grass	Standard
+33-1MP-bact_clamp	1MP	W9_Clamp_Standard_Sterilized	W_Clamp_Standard_Sterilized	Clamp_Standard_Sterilized	clamp	Sterilized	mortar_pilar	plant	White clover	legume	Standard
+17-7MP-bact	7MP	B20_Noclamp_Sterilized	B_Noclamp_Sterilized	Noclamp_Sterilized	no_clamp	Sterilized	mortar_pilar	plant	Buttercup	forbe	Standard
+7-1FDs-bact	1FDS	B21_Noclamp_Sterilized	B_Noclamp_Sterilized	Noclamp_Sterilized	no_clamp	Sterilized	freeze_dry	soil	Buttercup	forbe	Standard
+2-2FD-bact	2FD	B22_Noclamp_Sterilized	B_Noclamp_Sterilized	Noclamp_Sterilized	no_clamp	Sterilized	freeze_dry	plant	Buttercup	forbe	Standard
+1-1FD-bact	1FD	B23_Noclamp_Sterilized	B_Noclamp_Sterilized	Noclamp_Sterilized	no_clamp	Sterilized	freeze_dry	plant	Buttercup	forbe	Standard
+8-2FDs-bact	2FDs	BG4_Noclamp_Sterilized	BG_Noclamp_Sterilized	Noclamp_Sterilized	no_clamp	Sterilized	freeze_dry	soil	Bent_Grass	grass	Standard
+3-3FD-bact	3FD	BG5_Noclamp_Sterilized	BG_Noclamp_Sterilized	Noclamp_Sterilized	no_clamp	Sterilized	freeze_dry	plant	Bent_Grass	grass	Standard
+14-4MP-bact	4MP	BG6_Noclamp_Sterilized	BG_Noclamp_Sterilized	Noclamp_Sterilized	no_clamp	Sterilized	mortar_pilar	plant	Bent_Grass	grass	Standard
+13-3MP-bact	3MP	D2_Noclamp_Sterilized	D_Noclamp_Sterilized	Noclamp_Sterilized	no_clamp	Sterilized	mortar_pilar	plant	Dandelion	forbe	Standard
+9-3FDs-bact	3FDs	H13_Noclamp_Sterilized	H_Noclamp_Sterilized	Noclamp_Sterilized	no_clamp	Sterilized	freeze_dry	soil	Holcus	grass	Standard
+4-4FD-bact	4FD	H23_Noclamp_Sterilized	H_Noclamp_Sterilized	Noclamp_Sterilized	no_clamp	Sterilized	freeze_dry	plant	Holcus	grass	Standard
+10-4FDs-bact	4FDs	H24_Noclamp_Sterilized	H_Noclamp_Sterilized	Noclamp_Sterilized	no_clamp	Sterilized	freeze_dry	soil	Holcus	grass	Standard
+16-6MP-bact	6MP	H25_Noclamp_Sterilized	H_Noclamp_Sterilized	Noclamp_Sterilized	no_clamp	Sterilized	mortar_pilar	plant	Holcus	grass	Standard
+18-8MP-bact	8MP	P2_Noclamp_Sterilized	P_Noclamp_Sterilized	Noclamp_Sterilized	no_clamp	Sterilized	mortar_pilar	plant	Plantain	forbe	Standard
+12-2MP-bact	2MP	PRG3_Noclamp_Sterilized	PRG_Noclamp_Sterilized	Noclamp_Sterilized	no_clamp	Sterilized	mortar_pilar	plant	PRG	grass	Standard
+5-5FD-bact	5FD	PRG4_Noclamp_Sterilized	PRG_Noclamp_Sterilized	Noclamp_Sterilized	no_clamp	Sterilized	freeze_dry	plant	PRG	grass	Standard
+6-6FD-bact	6FD	S2_Noclamp_Sterilized	S_Noclamp_Sterilized	Noclamp_Sterilized	no_clamp	Sterilized	freeze_dry	plant	Sorrel	forbe	Standard
+15-5MP-bact	5MP	SVG2_Noclamp_Sterilized	SVG_Noclamp_Sterilized	Noclamp_Sterilized	no_clamp	Sterilized	mortar_pilar	plant	Sweet_vernal_Grass	grass	Standard
+11-1MP-bact	1MP	W18_Noclamp_Sterilized	W_Noclamp_Sterilized	Noclamp_Sterilized	no_clamp	Sterilized	mortar_pilar	plant	White clover	legume	Standard
+
