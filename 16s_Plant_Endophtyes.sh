@@ -39,13 +39,13 @@ qiime dada2 denoise-paired --i-demultiplexed-seqs demux-cutadapt_16S-Plant-Train
 
 qiime metadata tabulate --m-input-file denoizing_stats.qza --o-visualization denoizing_stats.qzv
 
-qiime feature-table summarize --i-table feature-table.qza --o-visualization feature-table.qzv --m-sample-metadata-file metadata-16S-Training.txt 
+qiime feature-table summarize --i-table feature-table.qza --o-visualization feature-table.qzv --m-sample-metadata-file metadata-16S.txt 
 
 qiime feature-table tabulate-seqs --i-data rep-seqs.qza --o-visualization rep-seqs.qzv
 
 qiime metadata tabulate --m-input-file denoizing_stats.qza --o-visualization denoizing_stats.qzv
 
-#Export to tsv for Visualization and removal of singletones
+#Export to tsv for Visualization 
 
 qiime tools export --input-path feature-table.qza --output-path exported-table
 
@@ -76,7 +76,7 @@ qiime taxa barplot --i-table feature-table.qza  --i-taxonomy taxonomy_SILVA.qza 
 
 
 #Creating a tree to do phylogenetic diversity analyzes. For more info follow the link
-https://docs.qiime2.org/2020.2/plugins/available/phylogeny/
+#https://docs.qiime2.org/2020.2/plugins/available/phylogeny/
 
 
 qiime phylogeny align-to-tree-mafft-fasttree --i-sequences rep-seqs.qza --o-alignment aligned-rep-seqs.qza --o-masked-alignment masked-aligned-rep-seqs.qza --o-tree unrooted-tree.qza --o-rooted-tree rooted-tree.qza
