@@ -11,12 +11,10 @@ library(ggplot2)
 library(dplyr)
 library(ggpubr)
 library(vegan)
-library(compositions) 
 library(rstudioapi)
 ##############################################################
 # Data Import from QIIME2
 ##############################################################
-
 
 # Set working directory
 setwd(dirname(getActiveDocumentContext()$path))
