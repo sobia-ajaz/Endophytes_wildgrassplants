@@ -24,7 +24,7 @@ physeq <- qza_to_phyloseq(
   features = "feature-table-16S-Plant-all.qza",
   tree = "rooted-tree-16S-Plant-all.qza",
   taxonomy = "taxonomy_SILVA-16S-Plant-all.qza",
-  metadata = "metadata_Plant.txt"
+  metadata = "metadata-16S.txt"
 )
 
 # Rarefy
