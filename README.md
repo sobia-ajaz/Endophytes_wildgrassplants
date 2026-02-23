@@ -18,7 +18,7 @@ Taxonomy table<br>
 QIIME2 artefacts (.qza files)<br>
 Phylogenetic Tree <br>
 
-**Step 2 — Phyloseq_Object_Creation.R** <br>
+**Step 3 — Phyloseq_Object_Creation.R** <br>
 The microbial community analysis was performed on 16S rRNA gene amplicon sequences derived from plant-associated samples. Raw sequencing data were processed using the QIIME2 pipeline, and the resulting artifacts—including the feature table, representative sequences, taxonomy assignments (based on the SILVA database), and a rooted phylogenetic tree—were imported into R (v4.x) using the qiime2R package. A phyloseq object was constructed to integrate the feature table, taxonomy, phylogenetic tree, and sample metadata. To account for uneven sequencing depth, the data were rarefied to an even depth of 40,000 reads per sample using rarefy_even_depth (set.seed = 1). This rarefaction retained 85 out of 95 samples, discarding those with insufficient coverage. Subsequently, the dataset was subset to include only samples from three target plant species: Buttercup, Holcus, and White clover. <br>
 
 **Outputs:** <br>
