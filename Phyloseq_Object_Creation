@@ -23,7 +23,7 @@ setwd(dirname(getActiveDocumentContext()$path))
 physeq <- qza_to_phyloseq(
   features = "feature-table.qza",
   tree = "rooted-tree.qza",
-  taxonomy = "taxonomy_SILVA-16S-Plant-all.qza",
+  taxonomy = "taxonomy_SILVA.qza",
   metadata = "metadata-16S.txt"
 )
 
