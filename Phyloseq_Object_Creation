@@ -5,9 +5,37 @@
 ##############################################################
 
 # Load required packages
-
-
+library(phyloseq)
+library(qiime2R)
+library(ggplot2)
+library(dplyr)
+library(ggpubr)
+library(vegan)
+library(compositions) 
+library(rstudioapi)
 ##############################################################
 # Data Import from QIIME2
 ##############################################################
 
+
+# Set working directory
+setwd(dirname(getActiveDocumentContext()$path))
+
+# Load and prepare data
+physeq <- qza_to_phyloseq(
+  features = "feature-table-16S-Plant-all.qza",
+  tree = "rooted-tree-16S-Plant-all.qza",
+  taxonomy = "taxonomy_SILVA-16S-Plant-all.qza",
+  metadata = "metadata_Plant.txt"
+)
+
+# Rarefy
+set.seed(1)
+S16_scaled <- rarefy_even_depth(physeq, sample.size = 40000, replace = FALSE, rngseed = 1)
+
+# Subset to plants
+plant_subset_physeq <- subset_samples(S16_scaled, Plant %in% c("Buttercup", "Holcus", "White clover"))
+
+# Save final object in two formats
+save(plant_subset_physeq, file = "plant_subset_16S.RData")      # RData (can hold multiple objects)
+saveRDS(plant_subset_physeq, file = "plant_subset_16S.rds")     # RDS (single object, preferred for readRDS)
