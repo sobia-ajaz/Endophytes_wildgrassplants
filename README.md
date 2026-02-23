@@ -18,9 +18,11 @@ Taxonomy table<br>
 QIIME2 artefacts (.qza files)<br>
 Phylogenetic Tree <br>
 
-**Step 2 — Phyloseq Object Creation R** <br>
+**Step 2 — Phyloseq_Object_Creation.R** <br>
 The microbial community analysis was performed on 16S rRNA gene amplicon sequences derived from plant-associated samples. Raw sequencing data were processed using the QIIME2 pipeline, and the resulting artifacts—including the feature table, representative sequences, taxonomy assignments (based on the SILVA database), and a rooted phylogenetic tree—were imported into R (v4.x) using the qiime2R package. A phyloseq object was constructed to integrate the feature table, taxonomy, phylogenetic tree, and sample metadata. To account for uneven sequencing depth, the data were rarefied to an even depth of 40,000 reads per sample using rarefy_even_depth (set.seed = 1). This rarefaction retained 85 out of 95 samples, discarding those with insufficient coverage. Subsequently, the dataset was subset to include only samples from three target plant species: Buttercup, Holcus, and White clover. <br>
 
 **Outputs:** <br>
 The final filtered and rarefied phyloseq object was saved in both .RData and .rds formats for downstream diversity and compositional analyses.
 
+**Step 2 — 16S_Microbial_Community_Analysis.R** <br>
+After loading the phyloseq object, sequences are agglomerated at the family level, and the 20 most abundant families are retained. Sample metadata are used to construct a composite treatment variable (Treatment_agg) distinguishing clamp vs. no‑clamp, optimized vs. standard, and sterilized vs. washed conditions. A stacked bar plot displays family‑level relative abundances, faceted by treatment type and plant species (Buttercup, Holcus, White clover). Families are further categorized into Chloroplast, Mitochondria, and Bacteria via keyword matching. Abundances are summed by category, and two additional stacked bar plots are generated: one showing the three categories across treatments, and another with percentage labels for categories >5% mean relative abundance. All plots are saved as high‑resolution PNG files. The script uses phyloseq, ggplot2, and base R functions for robust and reproducible analysis of microbial community structure and potential host contamination. <br>
