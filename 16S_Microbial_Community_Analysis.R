@@ -1,42 +1,46 @@
+##############################################################
+# 16S rRNA Microbial Community Analysis – Visualization
+# Author: Dr. Sobia Ajaz
+# Description: Loads rarefied & subsetted phyloseq object from RDS,
+#              then generates family-level and category-level plots.
+##############################################################
+
 # Load required libraries
 library(phyloseq)
-library(qiime2R)
 library(ggplot2)
 library(dplyr)
 library(vegan)
 library(ggtext)
 
-# Set working directory to current script location
+# Set working directory to current script location (RStudio only)
 setwd(dirname(getActiveDocumentContext()$path))
 
-# Load QIIME2 data
-ASVs <- read_qza("feature-table-16S-Plant-all.qza")
-metadata <- read_q2metadata("metadata_Plant.txt")
-taxonomy <- read_qza("taxonomy_SILVA-16S-Plant-all.qza")
-taxonomy <- parse_taxonomy(taxonomy$data)
+# -------------------------------------------------------------
+# Load the previously saved phyloseq object (rarefied and subsetted)
+# -------------------------------------------------------------
+plant_subset_physeq <- readRDS("plant_subset_16S.rds")
 
-# Create phyloseq object
-physeq <- qza_to_phyloseq(
-  features = "feature-table-16S-Plant-all.qza",
-  tree = "rooted-tree-16S-Plant-all.qza",
-  taxonomy = "taxonomy_SILVA-16S-Plant-all.qza",
-  metadata = "metadata_Plant.txt"
-)
+cat("Loaded phyloseq object:\n")
+print(plant_subset_physeq)
 
-# Rarefy to even depth
-set.seed(1)
-S16_scaled <- rarefy_even_depth(physeq, sample.size = 40000, replace = FALSE, rngseed = 1)
+# Verify that required sample variables exist
+required_vars <- c("Plant", "Clamp", "S_Name")
+missing_vars <- required_vars[!required_vars %in% sample_variables(plant_subset_physeq)]
+if(length(missing_vars) > 0) {
+  stop("Missing sample variables: ", paste(missing_vars, collapse = ", "))
+} else {
+  cat("All required sample variables found.\n")
+}
 
-# Subset to specific plants
-plant_subset_physeq <- subset_samples(S16_scaled, Plant %in% c("Buttercup", "Holcus", "White clover"))
-
+# -------------------------------------------------------------
 # Aggregate at Family level
+# -------------------------------------------------------------
 family_physeq <- tax_glom(plant_subset_physeq, taxrank = "Family")
 
-# USE ABSOLUTE COUNTS (no transformation)
-# Get top 20 families based on absolute counts
-top20_families <- names(sort(taxa_sums(family_physeq), decreasing = TRUE)[1:20])
-family_physeq_top20 <- prune_taxa(top20_families, family_physeq)
+# Create relative abundance version for top families
+family_physeq_rel <- transform_sample_counts(family_physeq, function(x) x / sum(x))
+top20_families <- names(sort(taxa_sums(family_physeq_rel), decreasing = TRUE)[1:20])
+family_physeq_top20 <- prune_taxa(top20_families, family_physeq_rel)
 
 # Ensure factors are properly ordered
 sample_data(family_physeq_top20)$Clamp <- factor(
@@ -44,14 +48,16 @@ sample_data(family_physeq_top20)$Clamp <- factor(
   levels = c("clamp", "no_clamp")
 )
 
-# CORRECTED: Create proper Treatment_agg variable that captures all categories
+# -------------------------------------------------------------
+# Create Treatment_agg variable based on S_Name and Clamp
+# -------------------------------------------------------------
 sample_data(family_physeq_top20)$Treatment_agg <- NA
 
 for(i in 1:nsamples(family_physeq_top20)) {
   s_name <- as.character(sample_data(family_physeq_top20)$S_Name[i])
   clamp_status <- as.character(sample_data(family_physeq_top20)$Clamp[i])
   
-  # Check for Clamp samples first (with optimized/standard distinction)
+  # Clamp samples
   if(clamp_status == "clamp") {
     if(grepl("optimized", s_name, ignore.case = TRUE)) {
       if(grepl("sterilized", s_name, ignore.case = TRUE)) {
@@ -66,7 +72,7 @@ for(i in 1:nsamples(family_physeq_top20)) {
         sample_data(family_physeq_top20)$Treatment_agg[i] <- "Clamp_Standard_Washed"
       }
     } else {
-      # Generic clamp samples (just clamp + washed/sterilized)
+      # Generic clamp samples
       if(grepl("sterilized", s_name, ignore.case = TRUE)) {
         sample_data(family_physeq_top20)$Treatment_agg[i] <- "Clamp_Sterilized"
       } else if(grepl("washed", s_name, ignore.case = TRUE)) {
@@ -74,7 +80,7 @@ for(i in 1:nsamples(family_physeq_top20)) {
       }
     }
   } 
-  # Check for No Clamp samples
+  # No Clamp samples
   else if(clamp_status == "no_clamp") {
     if(grepl("sterilized", s_name, ignore.case = TRUE)) {
       sample_data(family_physeq_top20)$Treatment_agg[i] <- "NoClamp_Sterilized"
@@ -83,30 +89,25 @@ for(i in 1:nsamples(family_physeq_top20)) {
     }
   }
   
-  # If still not assigned, use a default
+  # Fallback
   if(is.na(sample_data(family_physeq_top20)$Treatment_agg[i])) {
     sample_data(family_physeq_top20)$Treatment_agg[i] <- "Other"
   }
 }
 
-# CORRECTED ORDER: Sterilized first, then Washed
+# Define desired order: Sterilized first, then Washed
 desired_order <- c(
-  # Clamp Sterilized treatments
   "Clamp_Optimized_Sterilized",
   "Clamp_Standard_Sterilized", 
   "Clamp_Sterilized",
-  # No Clamp Sterilized treatments
   "NoClamp_Sterilized",
-  # Clamp Washed treatments
   "Clamp_Optimized_Washed",
   "Clamp_Standard_Washed",
   "Clamp_Washed",
-  # No Clamp Washed treatments
   "NoClamp_Washed",
   "Other"
 )
 
-# Use only the categories that actually exist in our data
 existing_treatments <- unique(sample_data(family_physeq_top20)$Treatment_agg)
 final_order <- desired_order[desired_order %in% existing_treatments]
 
@@ -115,7 +116,9 @@ sample_data(family_physeq_top20)$Treatment_agg <- factor(
   levels = final_order
 )
 
-# Melt data for plotting - USING ABSOLUTE COUNTS
+# -------------------------------------------------------------
+# Melt data for plotting (family-level)
+# -------------------------------------------------------------
 df_all <- psmelt(family_physeq_top20)
 
 # Colorblind-friendly palette for families
@@ -126,7 +129,6 @@ colorblind_palette <- c(
   "#FFFF99", "#1F78B4", "#33A02C", "#B2DF8A", "#FB9A99"
 )
 
-# Create dynamic color assignment for families
 num_families <- length(unique(df_all$Family))
 if(num_families <= 20) {
   family_colors <- colorblind_palette[1:num_families]
@@ -134,7 +136,7 @@ if(num_families <= 20) {
   family_colors <- colorRampPalette(colorblind_palette)(num_families)
 }
 
-# Create function to determine treatment type for coloring
+# Helper to get treatment type (Sterilized / Washed)
 get_treatment_type <- function(treatment) {
   if(grepl("Sterilized", treatment)) {
     return("Sterilized")
@@ -145,12 +147,13 @@ get_treatment_type <- function(treatment) {
   }
 }
 
-# Add treatment type to the data
 df_all$Treatment_Type <- sapply(df_all$Treatment_agg, get_treatment_type)
 
-# PLOT 1: Family-level composition - ABSOLUTE COUNTS
-family_plot_absolute <- ggplot(df_all, aes(x = Treatment_agg, y = Abundance, fill = Family)) +
-  geom_bar(stat = "identity", position = "stack") +  # Changed to "stack" for absolute counts
+# -------------------------------------------------------------
+# PLOT 1: Family-level composition
+# -------------------------------------------------------------
+family_plot <- ggplot(df_all, aes(x = Treatment_agg, y = Abundance, fill = Family)) +
+  geom_bar(stat = "identity", position = "fill") +
   facet_grid(~ Treatment_Type + Plant, scales = "free_x", space = "free") +
   theme_minimal() +
   theme(
@@ -166,91 +169,96 @@ family_plot_absolute <- ggplot(df_all, aes(x = Treatment_agg, y = Abundance, fil
   ) +
   labs(
     x = "Treatment Groups",
-    y = "Absolute Read Count",
-    title = "Top 20 Family-level Microbial Composition - Absolute Read Counts",
+    y = "Relative Abundance",
+    title = "Top 20 Family-level Microbial Composition",
     fill = "Bacterial Family"
   ) +
   scale_fill_manual(values = family_colors) +
-  scale_y_continuous(labels = scales::comma_format())  # Use comma format for read counts
+  scale_y_continuous(labels = scales::percent_format())
 
-print(family_plot_absolute)
+print(family_plot)
+ggsave("family_abundance_plot.png", family_plot, width = 16, height = 10, dpi = 700)
 
-# Save family plot
-ggsave("family_abundance_plot_ABSOLUTE.png", family_plot_absolute, width = 16, height = 10, dpi = 700)
+# -------------------------------------------------------------
+# Categorize families into Chloroplast, Mitochondria, Bacteria
+# -------------------------------------------------------------
+# Use full family object to overview
+df_all_categories <- psmelt(family_physeq)
 
-##########################################################
-# Categorize families into Chloroplast, Mitochondria, and Bacteria - ABSOLUTE COUNTS
-########################################################
-
-# SIMPLER APPROACH: Use psmelt which already includes sample data
-df_all_categories <- psmelt(family_physeq)  # Using original family_physeq with absolute counts
-
-# Check what columns are available
-cat("Columns in df_all_categories:\n")
-print(colnames(df_all_categories))
-
-# Categorize families into Chloroplast, Mitochondria, and Bacteria
-df_all_categories$Category <- ifelse(grepl("Chloroplast", df_all_categories$Family, ignore.case = TRUE), "Chloroplast",
-                                     ifelse(grepl("Mitochondria", df_all_categories$Family, ignore.case = TRUE), "Mitochondria", "Bacteria"))
-
-# Check if Treatment_agg exists, if not create it from S_Name
-if(!"Treatment_agg" %in% colnames(df_all_categories)) {
-  cat("Treatment_agg not found, creating from S_Name...\n")
-  df_all_categories$Treatment_agg <- NA
-  
-  for(i in 1:nrow(df_all_categories)) {
-    s_name <- as.character(df_all_categories$S_Name[i])
-    
-    if(grepl("optimized", s_name, ignore.case = TRUE)) {
-      if(grepl("sterilized", s_name, ignore.case = TRUE)) {
-        df_all_categories$Treatment_agg[i] <- "Clamp_Optimized_Sterilized"
-      } else if(grepl("washed", s_name, ignore.case = TRUE)) {
-        df_all_categories$Treatment_agg[i] <- "Clamp_Optimized_Washed"
-      }
-    } else if(grepl("standard", s_name, ignore.case = TRUE)) {
-      if(grepl("sterilized", s_name, ignore.case = TRUE)) {
-        df_all_categories$Treatment_agg[i] <- "Clamp_Standard_Sterilized"
-      } else if(grepl("washed", s_name, ignore.case = TRUE)) {
-        df_all_categories$Treatment_agg[i] <- "Clamp_Standard_Washed"
-      }
-    } else if(grepl("clamp", s_name, ignore.case = TRUE)) {
-      if(grepl("sterilized", s_name, ignore.case = TRUE)) {
-        df_all_categories$Treatment_agg[i] <- "Clamp_Sterilized"
-      } else if(grepl("washed", s_name, ignore.case = TRUE)) {
-        df_all_categories$Treatment_agg[i] <- "Clamp_Washed"
-      }
-    } else if(grepl("no.?clamp", s_name, ignore.case = TRUE)) {
-      if(grepl("sterilized", s_name, ignore.case = TRUE)) {
-        df_all_categories$Treatment_agg[i] <- "NoClamp_Sterilized"
-      } else if(grepl("washed", s_name, ignore.case = TRUE)) {
-        df_all_categories$Treatment_agg[i] <- "NoClamp_Washed"
-      }
-    } else {
-      df_all_categories$Treatment_agg[i] <- "Other"
-    }
+# --- ROBUST SAMPLE COLUMN HANDLING ---
+if(!"Sample" %in% colnames(df_all_categories)) {
+  possible_ids <- c("Sample", "sample", "SampleID", "sampleid", "id", "ID", "rowname")
+  found_id <- possible_ids[possible_ids %in% colnames(df_all_categories)]
+  if(length(found_id) == 0) {
+    stop("No sample identifier column found. Columns: ", paste(colnames(df_all_categories), collapse=", "))
   }
-  
-  # Set factor levels
-  df_all_categories$Treatment_agg <- factor(df_all_categories$Treatment_agg, levels = final_order)
+  df_all_categories <- df_all_categories %>% rename(Sample = !!found_id[1])
+  message("Renamed '", found_id[1], "' to 'Sample'.")
+} else {
+  message("Column 'Sample' already exists.")
+}
+# -------------------------------------
+
+# Assign categories
+df_all_categories$Category <- ifelse(
+  grepl("Chloroplast", df_all_categories$Family, ignore.case = TRUE), "Chloroplast",
+  ifelse(grepl("Mitochondria", df_all_categories$Family, ignore.case = TRUE), "Mitochondria", "Bacteria")
+)
+
+# Merge Treatment_agg and other metadata from family_physeq_top20
+sample_df <- data.frame(sample_data(family_physeq_top20)) %>%
+  select(S_Name, Treatment_agg, Plant, Clamp)
+
+# Join by matching sample identifier (assuming Sample column contains S_Name values)
+if(!"Treatment_agg" %in% colnames(df_all_categories)) {
+  df_all_categories <- df_all_categories %>%
+    left_join(sample_df, by = c("Sample" = "S_Name"))
 }
 
-# Aggregate absolute abundance values for categories
-df_agg <- df_all_categories %>%
-  group_by(Sample, S_Name, Treatment_agg, Plant, Category) %>%
-  summarise(Absolute_Abundance = sum(Abundance), .groups = "drop")  # Using absolute counts
+# Ensure Plant exists
+if(!"Plant" %in% colnames(df_all_categories) && "Plant" %in% colnames(sample_df)) {
+  df_all_categories <- df_all_categories %>%
+    left_join(sample_df %>% select(S_Name, Plant), by = c("Sample" = "S_Name"))
+}
 
-# Define custom colors for categories
+# Also ensure S_Name exists
+if(!"S_Name" %in% colnames(df_all_categories)) {
+  if(all(df_all_categories$Sample %in% sample_df$S_Name)) {
+    df_all_categories$S_Name <- df_all_categories$Sample
+    message("Created S_Name from Sample.")
+  } else {
+    stop("S_Name column not found and cannot be inferred.")
+  }
+}
+
+# --- DIAGNOSTIC: Check columns before aggregation ---
+cat("\nColumns in df_all_categories before aggregation:\n")
+print(colnames(df_all_categories))
+if(!"Sample" %in% colnames(df_all_categories)) {
+  stop("ERROR: 'Sample' column is missing. Check output above.")
+}
+# ----------------------------------------------------
+
+# Aggregate by sample and category using base R 
+df_agg <- aggregate(Abundance ~ Sample + S_Name + Treatment_agg + Plant + Category,
+                    data = df_all_categories, FUN = sum)
+
+# Now compute relative abundance per sample using dplyr
+df_agg <- df_agg %>%
+  group_by(Sample) %>%
+  mutate(Abundance_relative = Abundance / sum(Abundance) * 100) %>%
+  ungroup()
+
+# Define category colors
 category_palette <- c("Chloroplast" = '#009E73', "Mitochondria" = '#1F78B4', "Bacteria" = '#FF7F00')
-
-# Ensure proper factor order
 df_agg$Category <- factor(df_agg$Category, levels = c("Chloroplast", "Mitochondria", "Bacteria"))
-
-# Add treatment type for faceting
 df_agg$Treatment_Type <- sapply(df_agg$Treatment_agg, get_treatment_type)
 
-# PLOT 2: Three-category composition with ABSOLUTE COUNTS
-category_plot_absolute <- ggplot(df_agg, aes(x = Treatment_agg, y = Absolute_Abundance, fill = Category)) +
-  geom_bar(stat = "identity", position = "stack") +  # Changed to "stack" for absolute counts
+# -------------------------------------------------------------
+# PLOT 2: Three-category composition
+# -------------------------------------------------------------
+category_plot <- ggplot(df_agg, aes(x = Treatment_agg, y = Abundance_relative/100, fill = Category)) +
+  geom_bar(stat = "identity", position = "fill") +
   facet_grid(~ Treatment_Type + Plant, scales = "free_x", space = "free") +
   theme_minimal() +
   theme(
@@ -266,32 +274,31 @@ category_plot_absolute <- ggplot(df_agg, aes(x = Treatment_agg, y = Absolute_Abu
   ) +
   labs(
     x = "Treatment Groups",
-    y = "Absolute Read Count",
-    title = "Microbial Composition by Category - Absolute Read Counts",
+    y = "Relative Abundance",
+    title = "Microbial Composition by Category",
     fill = "Category"
   ) +
   scale_fill_manual(values = category_palette) +
-  scale_y_continuous(labels = scales::comma_format())  # Use comma format for read counts
+  scale_y_continuous(labels = scales::percent_format())
 
-print(category_plot_absolute)
+print(category_plot)
+ggsave("category_abundance_plot.png", category_plot, width = 16, height = 10, dpi = 700)
 
-# Save category plot
-ggsave("category_abundance_plot_ABSOLUTE.png", category_plot_absolute, width = 16, height = 10, dpi = 700)
+# -------------------------------------------------------------
+# PLOT 3: Category plot with percentage labels 
+# -------------------------------------------------------------
+# Use aggregate to compute mean abundance per group (retains all grouping columns)
+df_agg_percent <- aggregate(Abundance_relative ~ Treatment_agg + Treatment_Type + Plant + Category,
+                            data = df_agg, FUN = mean)
 
-# PLOT 3: Three-category composition with absolute counts and value labels
-# First, calculate the total for each category within each treatment
-df_agg_total <- df_agg %>%
-  group_by(Treatment_agg, Plant, Category) %>%
-  summarise(Total_Abundance = sum(Absolute_Abundance), .groups = "drop")
+# Rename the mean column for clarity
+names(df_agg_percent)[names(df_agg_percent) == "Abundance_relative"] <- "Mean_Abundance"
 
-# Add treatment type for faceting
-df_agg_total$Treatment_Type <- sapply(df_agg_total$Treatment_agg, get_treatment_type)
-
-category_plot_total <- ggplot(df_agg_total, aes(x = Treatment_agg, y = Total_Abundance, fill = Category)) +
-  geom_bar(stat = "identity", position = "stack") +
+category_plot_percent <- ggplot(df_agg_percent, aes(x = Treatment_agg, y = Mean_Abundance/100, fill = Category)) +
+  geom_bar(stat = "identity", position = "fill") +
   geom_text(
-    aes(label = ifelse(Total_Abundance > 1000, scales::comma(Total_Abundance), "")), 
-    position = position_stack(vjust = 0.5), 
+    aes(label = ifelse(Mean_Abundance > 5, sprintf("%.0f%%", Mean_Abundance), "")), 
+    position = position_fill(vjust = 0.5), 
     size = 3, color = "black", fontface = "bold"
   ) +
   facet_grid(~ Treatment_Type + Plant, scales = "free_x", space = "free") +
@@ -303,53 +310,27 @@ category_plot_total <- ggplot(df_agg_total, aes(x = Treatment_agg, y = Total_Abu
     axis.title.y = element_text(size = 14, face = "bold"),
     legend.text = element_text(size = 11),
     legend.title = element_text(size = 13, face = "bold"),
-    plot.title = element_text(size = 16, face = "bold"),
     strip.text = element_text(face = "bold", size = 10),
     panel.spacing = unit(0.5, "lines")
   ) +
   labs(
     x = "Treatment",
-    y = "Absolute Read Count",
-    title = "Total Read Counts by Category",
-    subtitle = "Values shown for totals > 1,000 reads",
+    y = "Relative Abundance",
+    title = "",
     fill = "Category"
   ) +
   scale_fill_manual(values = category_palette) +
-  scale_y_continuous(labels = scales::comma_format())
+  scale_y_continuous(labels = scales::percent_format())
 
-print(category_plot_total)
+print(category_plot_percent)
+ggsave("category_abundance_plot_with_labels.png", category_plot_percent, width = 16, height = 10, dpi = 700)
 
-# Save total counts version
-ggsave("category_abundance_plot_TOTAL_COUNTS.png", category_plot_total, width = 16, height = 10, dpi = 700)
-
-# Create a summary with absolute count statistics
-cat("\n=== ABSOLUTE COUNT ANALYSIS SUMMARY ===\n")
-cat("Total samples:", nsamples(family_physeq_top20), "\n")
-cat("Rarefaction depth: 40,000 reads per sample\n")
+# -------------------------------------------------------------
+cat("\n=== ANALYSIS SUMMARY ===\n")
+cat("Total samples in top20 dataset:", nsamples(family_physeq_top20), "\n")
 cat("Treatment order:", paste(final_order, collapse = " -> "), "\n")
 cat("Plants analyzed:", paste(unique(df_all$Plant), collapse = ", "), "\n")
-cat("\nAbsolute Count Plots created:\n")
-cat("- family_abundance_plot_ABSOLUTE.png: Top 20 family-level composition (absolute counts)\n")
-cat("- category_abundance_plot_ABSOLUTE.png: Three-category composition (absolute counts)\n")
-cat("- category_abundance_plot_TOTAL_COUNTS.png: Three-category with total read counts\n")
-
-# Calculate and display some absolute count statistics
-cat("\n=== ABSOLUTE COUNT STATISTICS ===\n")
-total_reads <- sum(df_agg$Absolute_Abundance)
-cat("Total reads across all samples:", scales::comma(total_reads), "\n")
-
-category_totals <- df_agg %>%
-  group_by(Category) %>%
-  summarise(Total_Reads = sum(Absolute_Abundance),
-            Percentage = round(Total_Reads / total_reads * 100, 2))
-
-print(category_totals)
-
-# Calculate per-sample statistics
-sample_stats <- df_agg %>%
-  group_by(Sample, Treatment_agg, Plant) %>%
-  summarise(Total_Reads = sum(Absolute_Abundance),
-            .groups = "drop")
-
-cat("\nPer-sample read count summary:\n")
-print(summary(sample_stats$Total_Reads))
+cat("Plots saved:\n")
+cat("- family_abundance_plot.png\n")
+cat("- category_abundance_plot.png\n")
+cat("- category_abundance_plot_with_labels.png\n")
