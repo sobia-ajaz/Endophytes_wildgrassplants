@@ -17,18 +17,26 @@ setwd(dirname(getActiveDocumentContext()$path))
 physeq <- readRDS("plant_subset_16S.rds")
 physeq
 
-# --- Representative sequences ---
-asvs <- readDNAStringSet("rep_seqs.fasta")
-names(asvs) <- sub(" .*", "", names(asvs))  # Qiime2 hash IDs
+# --- Representative sequences (subset to ASVs in physeq) ---
+asvs_full <- readDNAStringSet("rep_seqs.fasta")
+names(asvs_full) <- sub(" .*", "", names(asvs_full))  # Qiime2 hash IDs
+asvs <- asvs_full[names(asvs_full) %in% taxa_names(physeq)]
 
-# --- OTU matrix (ASVs in rows, samples in columns) ---
-otu <- as(ASVs$data, "matrix")
+# --- OTU matrix (ASVs in rows, samples in columns) from physeq ---
+otu <- as(otu_table(physeq), "matrix")
+if (!taxa_are_rows(physeq)) {
+  otu <- t(otu)
+}
 
-# --- Ensure SampleID column in metadata ---
-if (!"SampleID" %in% colnames(metadata)) {
-  metadata <- metadata %>% rownames_to_column("SampleID")
-} else {
-  metadata$SampleID <- as.character(metadata$SampleID)
+# --- Sample metadata from physeq ---
+metadata <- as(sample_data(physeq), "data.frame") %>%
+  rownames_to_column("SampleID")
+
+# Verify that required columns exist
+required_cols <- c("Plant", "Clamp", "sequencing")
+if (!all(required_cols %in% colnames(metadata))) {
+  stop("Missing required columns in metadata: ",
+       paste(setdiff(required_cols, colnames(metadata)), collapse = ", "))
 }
 
 # --- Plants of interest (fixed order) ---
@@ -75,7 +83,7 @@ analyze_pna <- function(probe, probe_name, otu, asvs, metadata, plants_of_intere
     left_join(metadata %>% select(SampleID, Plant, Clamp, sequencing), by = "SampleID") %>%
     filter(Plant %in% plants_of_interest) %>%
     mutate(
-      Plant = factor(Plant, levels = plants_of_interest),  # fixed plant order
+      Plant = factor(Plant, levels = plants_of_interest),
       MismatchCategory = case_when(
         Mismatches == 0 ~ "Perfect Match",
         Mismatches == 1 ~ "1 Mismatch",
@@ -84,7 +92,7 @@ analyze_pna <- function(probe, probe_name, otu, asvs, metadata, plants_of_intere
       ),
       MismatchCategory = factor(
         MismatchCategory,
-        levels = c("Perfect Match", "1 Mismatch", "2 Mismatches", "3+ Mismatches")  # fixed legend order
+        levels = c("Perfect Match", "1 Mismatch", "2 Mismatches", "3+ Mismatches")
       )
     )
   
@@ -103,13 +111,13 @@ analyze_pna <- function(probe, probe_name, otu, asvs, metadata, plants_of_intere
   
   # Plot
   p <- ggplot(summary_df, aes(x = Plant, y = Percent, fill = MismatchCategory)) +
-    geom_bar(stat = "identity", position = "stack", width = 0.75) +  # wider bars
+    geom_bar(stat = "identity", position = "stack", width = 0.75) +
     geom_text(aes(label = round(Percent, 1)),
               position = position_stack(vjust = 0.5),
-              size = 3.0) +  # larger text inside bars
+              size = 3.0) +
     facet_grid(Clamp ~ sequencing, scales = "free_x", space = "free_x") +
     scale_fill_manual(values = colors) +
-    scale_y_continuous(limits = c(0, 100), oob = scales::squish)+  # unified y-axis 0–100%
+    scale_y_continuous(limits = c(0, 100), oob = scales::squish) +
     theme_minimal(base_size = 16) +
     theme(
       axis.text.x = element_text(size = 14, angle = 45, hjust = 1, vjust = 1),
@@ -161,11 +169,10 @@ mitochondria_results <- analyze_pna(
 combined_plot <- chloroplast_results$plot + mitochondria_results$plot
 
 # --- Display combined plot ---
-combined_plot
+print(combined_plot)
 
 # --- Save combined plot as PDF and PNG ---
 ggsave("PNA_clamps_comparison.pdf", combined_plot,
        width = 12, height = 6, units = "in")
-
 ggsave("PNA_clamps_comparison.png", combined_plot,
        width = 12, height = 6, units = "in", dpi = 300)
