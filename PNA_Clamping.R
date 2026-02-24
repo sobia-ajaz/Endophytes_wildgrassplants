@@ -12,24 +12,10 @@ library(qiime2R)
 
 # --- Set working directory ---
 setwd(dirname(getActiveDocumentContext()$path))
-###import env data
-save.image(file = "final-clamp-percentage.RData")
-# --- Load Qiime2 data ---
-ASVs <- read_qza("feature-table-16S-Plant-all.qza")      # ASV table
-metadata <- read_q2metadata("metadata_Plant.txt")        # sample metadata
-taxonomy <- read_qza("taxonomy_SILVA-16S-Plant-all.qza") # taxonomy
-taxonomy <- parse_taxonomy(taxonomy$data)
 
-physeq <- qza_to_phyloseq(
-  features = "feature-table-16S-Plant-all.qza",
-  tree = "rooted-tree-16S-Plant-all.qza",
-  taxonomy = "taxonomy_SILVA-16S-Plant-all.qza",
-  metadata = "metadata_Plant.txt"
-)
-
-# --- Reproducibility ---
-set.seed(1)  
-physeq <- rarefy_even_depth(physeq, sample.size=40000, replace=FALSE, rngseed = 1) 
+# Load and prepare data
+physeq <- readRDS("plant_subset_16S.rds")
+physeq
 
 # --- Representative sequences ---
 asvs <- readDNAStringSet("rep_seqs.fasta")
