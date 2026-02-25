@@ -13,19 +13,21 @@ library(qiime2R)
 # --- Set working directory ---
 setwd(dirname(getActiveDocumentContext()$path))
 
-# Load and prepare data
+# Load the rarefied phyloseq object (already subset to plants of interest)
 physeq <- readRDS("plant_subset_16S.rds")
-physeq
+print(physeq)
 
-# --- Representative sequences (subset to ASVs in physeq) ---
+# --- Representative sequences (only those present in physeq) ---
 asvs_full <- readDNAStringSet("rep_seqs.fasta")
-names(asvs_full) <- sub(" .*", "", names(asvs_full))  # Qiime2 hash IDs
+names(asvs_full) <- sub(" .*", "", names(asvs_full))  # QIIME2 hash IDs
 asvs <- asvs_full[names(asvs_full) %in% taxa_names(physeq)]
+cat("Number of ASVs in physeq:", ntaxa(physeq), "\n")
+cat("Number of ASV sequences retained:", length(asvs), "\n")
 
 # --- OTU matrix (ASVs in rows, samples in columns) from physeq ---
 otu <- as(otu_table(physeq), "matrix")
 if (!taxa_are_rows(physeq)) {
-  otu <- t(otu)
+  otu <- t(otu)  # ensure taxa are rows
 }
 
 # --- Sample metadata from physeq ---
@@ -34,9 +36,9 @@ metadata <- as(sample_data(physeq), "data.frame") %>%
 
 # Verify that required columns exist
 required_cols <- c("Plant", "Clamp", "sequencing")
-if (!all(required_cols %in% colnames(metadata))) {
-  stop("Missing required columns in metadata: ",
-       paste(setdiff(required_cols, colnames(metadata)), collapse = ", "))
+missing_cols <- setdiff(required_cols, colnames(metadata))
+if (length(missing_cols) > 0) {
+  stop("Missing required columns in metadata: ", paste(missing_cols, collapse = ", "))
 }
 
 # --- Plants of interest (fixed order) ---
@@ -80,7 +82,20 @@ analyze_pna <- function(probe, probe_name, otu, asvs, metadata, plants_of_intere
     rownames_to_column("ASV") %>%
     pivot_longer(-ASV, names_to = "SampleID", values_to = "Reads") %>%
     left_join(best_hits, by = "ASV") %>%
-    left_join(metadata %>% select(SampleID, Plant, Clamp, sequencing), by = "SampleID") %>%
+    left_join(metadata %>% select(SampleID, Plant, Clamp, sequencing), by = "SampleID")
+  
+  # --- DIAGNOSTIC: check join success ---
+  cat("\n=== Diagnostic for", probe_name, "===\n")
+  cat("SampleID in OTU long (first 5):\n")
+  print(head(otu_long$SampleID))
+  cat("SampleID in metadata (first 5):\n")
+  print(head(metadata$SampleID))
+  cat("Columns after join:\n")
+  print(colnames(otu_long))
+  # -------------------------------------
+  
+  # Filter and create categories
+  otu_long <- otu_long %>%
     filter(Plant %in% plants_of_interest) %>%
     mutate(
       Plant = factor(Plant, levels = plants_of_interest),
@@ -176,3 +191,5 @@ ggsave("PNA_clamps_comparison.pdf", combined_plot,
        width = 12, height = 6, units = "in")
 ggsave("PNA_clamps_comparison.png", combined_plot,
        width = 12, height = 6, units = "in", dpi = 300)
+
+cat("\nAnalysis complete. Check output files.\n")
