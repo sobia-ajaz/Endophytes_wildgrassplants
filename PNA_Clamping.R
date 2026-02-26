@@ -1,3 +1,13 @@
+
+
+##############################################################
+# 16S rRNA Microbial Community Analysis - PNA Clamping percentages
+# Author: Dr. Sobia Ajaz
+# Updated: Feb 2026
+##############################################################
+
+
+
 # --- Load libraries ---
 library(Biostrings)
 library(phyloseq)
