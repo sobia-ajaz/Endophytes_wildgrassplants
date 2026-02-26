@@ -13,7 +13,7 @@ library(qiime2R)
 # --- Set working directory ---
 setwd(dirname(getActiveDocumentContext()$path))
 
-# Load the rarefied phyloseq object (already subset to plants of interest)
+# Load the rarefied phyloseq object
 physeq <- readRDS("plant_subset_16S.rds")
 print(physeq)
 
@@ -84,6 +84,14 @@ analyze_pna <- function(probe, probe_name, otu, asvs, metadata, plants_of_intere
     left_join(best_hits, by = "ASV") %>%
     left_join(metadata %>% select(SampleID, Plant, Clamp, sequencing), by = "SampleID")
   
+  # --- FILTER OUT NO_CLAMP AND NA ---
+  # Keep only samples where Clamp is exactly "clamp" and not NA
+  otu_long <- otu_long %>%
+    filter(!is.na(Clamp) & Clamp == "clamp") %>%
+    # Drop unused factor levels for Clamp (if it's a factor, otherwise convert)
+    mutate(Clamp = factor(Clamp, levels = unique(Clamp)))
+  # ---------------------------------
+  
   # --- DIAGNOSTIC: check join success ---
   cat("\n=== Diagnostic for", probe_name, "===\n")
   cat("SampleID in OTU long (first 5):\n")
@@ -92,9 +100,14 @@ analyze_pna <- function(probe, probe_name, otu, asvs, metadata, plants_of_intere
   print(head(metadata$SampleID))
   cat("Columns after join:\n")
   print(colnames(otu_long))
+  cat("Unique Clamp values after filtering:", paste(unique(otu_long$Clamp), collapse = ", "), "\n")
+  cat("Any NA in Clamp after filtering:", any(is.na(otu_long$Clamp)), "\n")
+  cat("Any NA in Plant after filtering:", any(is.na(otu_long$Plant)), "\n")
+  cat("Any NA in sequencing after filtering:", any(is.na(otu_long$sequencing)), "\n")
+  cat("Any NA in Mismatches after filtering:", any(is.na(otu_long$Mismatches)), "\n")
   # -------------------------------------
   
-  # Filter and create categories
+  # Filter to plants of interest and create categories
   otu_long <- otu_long %>%
     filter(Plant %in% plants_of_interest) %>%
     mutate(
@@ -103,13 +116,15 @@ analyze_pna <- function(probe, probe_name, otu, asvs, metadata, plants_of_intere
         Mismatches == 0 ~ "Perfect Match",
         Mismatches == 1 ~ "1 Mismatch",
         Mismatches == 2 ~ "2 Mismatches",
-        Mismatches >= 3 ~ "3+ Mismatches"
+        Mismatches >= 3 ~ "3+ Mismatches",
+        TRUE ~ NA_character_  # catch any unexpected
       ),
       MismatchCategory = factor(
         MismatchCategory,
         levels = c("Perfect Match", "1 Mismatch", "2 Mismatches", "3+ Mismatches")
       )
-    )
+    ) %>%
+    filter(!is.na(MismatchCategory))  # remove any rows where MismatchCategory is NA
   
   # Summarize by plant / condition
   summary_df <- otu_long %>%
@@ -117,6 +132,13 @@ analyze_pna <- function(probe, probe_name, otu, asvs, metadata, plants_of_intere
     summarise(TotalReads = sum(Reads, na.rm = TRUE), .groups = "drop") %>%
     group_by(Plant, Clamp, sequencing) %>%
     mutate(Percent = 100 * TotalReads / sum(TotalReads))
+  
+  # Ensure no NA in grouping columns of summary_df
+  if (any(is.na(summary_df$Plant)) | any(is.na(summary_df$Clamp)) | 
+      any(is.na(summary_df$sequencing)) | any(is.na(summary_df$MismatchCategory))) {
+    warning("NA values found in grouping columns of summary_df. Removing them.")
+    summary_df <- summary_df %>% filter(!is.na(Plant), !is.na(Clamp), !is.na(sequencing), !is.na(MismatchCategory))
+  }
   
   # Save tables
   write.table(best_hits, paste0(output_prefix, "_perASV.txt"),
@@ -130,6 +152,8 @@ analyze_pna <- function(probe, probe_name, otu, asvs, metadata, plants_of_intere
     geom_text(aes(label = round(Percent, 1)),
               position = position_stack(vjust = 0.5),
               size = 3.0) +
+    # facet by sequencing only (optional – if you want to remove Clamp facet)
+    # facet_wrap(~ sequencing, scales = "free_x") +  # uncomment this and comment the line below if you want only sequencing facets
     facet_grid(Clamp ~ sequencing, scales = "free_x", space = "free_x") +
     scale_fill_manual(values = colors) +
     scale_y_continuous(limits = c(0, 100), oob = scales::squish) +
