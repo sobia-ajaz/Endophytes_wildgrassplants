@@ -1,4 +1,9 @@
-library(phyloseq)
+
+##############################################################
+# 16S rRNA Microbial Community Analysis - Alpha diversity
+# Author: Dr. Sobia Ajaz
+# Updated: Feb 2026
+##############################################################library(phyloseq)
 library(qiime2R)
 library(ggplot2)
 library(dplyr)
