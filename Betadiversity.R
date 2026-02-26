@@ -1,3 +1,10 @@
+
+##############################################################
+# 16S rRNA Microbial Community Analysis - Betadiversity
+# Author: Dr. Sobia Ajaz
+# Updated: Feb 2026
+##############################################################
+
 library(phyloseq)
 library(qiime2R)
 library(ggplot2)
